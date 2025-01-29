@@ -109,7 +109,7 @@ fun EndScreen(winnerMessage : String, replay: () -> Unit){
 }
 
 @Composable
-fun TikTok() {
+fun TikTok() {  //aaaaaa
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = DestinationTTT.PlayScreen) {
         composable<DestinationTTT.PlayScreen> {
