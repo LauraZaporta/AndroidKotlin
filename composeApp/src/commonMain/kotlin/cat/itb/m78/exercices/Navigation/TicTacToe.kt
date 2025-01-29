@@ -44,8 +44,6 @@ private class TicTacToeView : ViewModel() {
     val winner = mutableStateOf<String>("")
     val XorO = mutableStateOf<Boolean?>(null)
 
-    val GameMatrix = mutableListOf<
-
     fun winnerIsMessage(X : Boolean){
         if (X){
             winner.value = "X is the winner!"
