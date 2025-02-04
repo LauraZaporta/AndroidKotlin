@@ -7,10 +7,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cat.itb.m78.exercices.Navigation.LibNavScreenSample
 import cat.itb.m78.exercices.Navigation.ManualNav
+import cat.itb.m78.exercices.Navigation.OXONav
 import cat.itb.m78.exercices.Navigation.Screen1
 import cat.itb.m78.exercices.Navigation.Screen2
 import cat.itb.m78.exercices.Navigation.Screen3
-import cat.itb.m78.exercices.Navigation.TikTok
 import cat.itb.m78.exercices.state.DiceRoller
 import cat.itb.m78.exercices.state.Good
 import cat.itb.m78.exercices.state.SayHello
@@ -26,5 +26,5 @@ import org.jetbrains.compose.reload.DevelopmentEntryPoint
 
 @Composable
 internal fun App() = AppTheme {
-    TikTok()
+    OXONav()
 }
