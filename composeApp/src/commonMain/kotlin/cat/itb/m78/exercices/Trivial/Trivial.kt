@@ -1,32 +1,42 @@
-package cat.itb.m78.exercices
+package cat.itb.m78.exercices.Trivial
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import cat.itb.m78.exercices.Navigation.Destination
+import cat.itb.m78.exercices.Navigation.GameViewModel
 import kotlinx.serialization.Serializable
-import m78exercices.composeapp.generated.resources.Kanit_Light
+import m78exercices.composeapp.generated.resources.Audiowide_Regular
 import m78exercices.composeapp.generated.resources.Res
-import m78exercices.composeapp.generated.resources.Trivial
+import m78exercices.composeapp.generated.resources.trivial
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
+import kotlin.random.Random
 
 object Ubication {
     @Serializable
@@ -39,34 +49,6 @@ object Ubication {
     data class ResultScreen (val winner: String)
 }
 
-class TrivialVM : ViewModel(){
-
-}
-
-@Composable
-fun menuScreen(){
-    Column(modifier = Modifier.fillMaxSize() .background(Color(0XFF23B8CF)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center){
-
-        Text("Trivial", fontSize = 3.em, fontFamily = FontFamily(Font(Res.font.Kanit_Light)))
-        Spacer(Modifier.height(30.dp))
-        Image(painter = painterResource(Res.drawable.Trivial),
-            contentDescription = null,
-            modifier = Modifier.size(150.dp))
-        Spacer(Modifier.height(20.dp))
-        Button( onClick = {}){
-            Text("New game")
-        }
-        Spacer(Modifier.height(10.dp))
-        Button( onClick = {}){
-            Text("Settings")
-        }
-    }
-}
-fun gameScreen(){
-
-}
 fun settingsScreen(){
 
 }
@@ -79,7 +61,8 @@ fun TrivialNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Ubication.MenuScreen) {
         composable<Ubication.MenuScreen> {
-            menuScreen()
+            menuScreen( goToGameScreen = { navController.navigate(Ubication.GameScreen) },
+                goToSettingsScreen = { navController.navigate(Ubication.SettingsScreen) })
         }
         composable<Ubication.GameScreen> {
             gameScreen()
