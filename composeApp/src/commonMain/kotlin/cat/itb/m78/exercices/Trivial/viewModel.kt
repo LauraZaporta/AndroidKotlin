@@ -16,7 +16,4 @@ class TrivialVM : ViewModel(){
     fun generateRandomAnswer() : List<Int>{
         return answerPositions.shuffled()
     }
-    fun checkAnswerAndNext(question: Question){
-
-    }
 }
