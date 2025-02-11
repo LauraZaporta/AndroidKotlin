@@ -44,9 +44,7 @@ fun menuScreen(goToGameScreen: ()-> Unit,
             contentDescription = null,
             modifier = Modifier.size(200.dp))
         Spacer(Modifier.height(40.dp))
-        Button( onClick = {goToGameScreen()
-                          trivialVM.generateRandomAnswer()
-                          trivialVM.selectRandomQuestion()},
+        Button( onClick = {goToGameScreen()},
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ){
