@@ -5,29 +5,44 @@ import androidx.lifecycle.ViewModel
 import kotlin.random.Random
 
 class TrivialVM : ViewModel(){
-    val unusedQuestions = (0 until Questions.size).toMutableList()
+    val settings = TrivialSettingsManager.get()
+    val boxIsExpanded = mutableStateOf(false)
+    val gender = mutableStateOf("")
+
+    val unusedQuestions = (0 until chooseQuestionList().size).toMutableList()
     val randomQuestion = mutableStateOf(unusedQuestions.random())
-    val question = mutableStateOf(Questions[randomQuestion.value])
+    val question = mutableStateOf(chooseQuestionList()[randomQuestion.value])
     val answerResult = mutableStateOf("")
-    val points = mutableStateOf(0)
-    val rounds = mutableStateOf(10)
-    val doneRounds = mutableStateOf(0)
     var answerPositions = mutableListOf(0,1,2,3)
+    val points = mutableStateOf(0)
+    val rounds = mutableStateOf(settings.rounds)
+    val doneRounds = mutableStateOf(0)
+    val chosenQuestionList = mutableStateOf(settings.difficulty)
 
     fun deleteUsedQuestion(randomQuestion : Int){
         unusedQuestions.remove(randomQuestion)
     }
 
+    fun chooseQuestionList() : List<Question>{
+        if (chosenQuestionList.value == -1){
+            return QuestionsEasy
+        } else if (chosenQuestionList.value == 0){
+            return QuestionsMedium
+        } else { return QuestionsHard }
+    }
+
     fun selectRandomQuestion(){
         if (unusedQuestions.size > 0){
             randomQuestion.value = (unusedQuestions.random())
-            question.value = Questions[randomQuestion.value]
+            question.value = chooseQuestionList()[randomQuestion.value]
             generateRandomAnswer()
         }
     }
+
     fun generateRandomAnswer(){
         answerPositions = answerPositions.shuffled().toMutableList()
     }
+
     fun checkAnswer(answer : String, goToEndScreen : () -> Unit){
         doneRounds.value++
         if (doneRounds.value >= rounds.value){

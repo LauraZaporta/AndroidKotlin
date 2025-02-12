@@ -19,10 +19,6 @@ object Ubication {
     data class ResultScreen (val points: Int)
 }
 
-fun settingsScreen(){
-
-}
-
 @Composable
 fun TrivialNavigation() {
     val navController = rememberNavController()

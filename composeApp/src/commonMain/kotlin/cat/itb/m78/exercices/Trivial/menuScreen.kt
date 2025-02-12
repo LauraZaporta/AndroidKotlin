@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cat.itb.m78.exercices.Navigation.GameViewModel
 import m78exercices.composeapp.generated.resources.Audiowide_Regular
 import m78exercices.composeapp.generated.resources.Res
 import m78exercices.composeapp.generated.resources.trivial
@@ -31,7 +30,6 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun menuScreen(goToGameScreen: ()-> Unit,
                goToSettingsScreen: () -> Unit){
-    val trivialVM = viewModel { TrivialVM() }
     val brushBackground = Brush.linearGradient(listOf(Color(0XFF3CFAA3), Color(0XFFACFA3E)))
 
     Column(modifier = Modifier.fillMaxSize() .background(brushBackground),
