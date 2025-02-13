@@ -31,7 +31,7 @@ class TrivialVM : ViewModel(){
     }
 
     fun selectRandomQuestion(){
-        if (unusedQuestions.size > 0){
+        if (unusedQuestions.size > 0 && doneRounds.value < rounds.value){
             randomQuestion.value = (unusedQuestions.random())
             question.value = currentQuestions[randomQuestion.value]
             generateRandomAnswer()
@@ -44,18 +44,14 @@ class TrivialVM : ViewModel(){
 
     fun checkAnswer(answer : String, goToEndScreen : () -> Unit){
         doneRounds.value++
+        if (question.value.answers[0] == answer){
+            points.value++
+            answerResult.value = "Correcte!"
+        } else { answerResult.value = "Incorrecte! La resposta era " + question.value.answers[0]}
+        deleteUsedQuestion(randomQuestion.value)
+        selectRandomQuestion()
         if (doneRounds.value >= rounds.value){
             goToEndScreen()
-        } else {
-            if (question.value.answers[0] == answer){
-                points.value++
-                answerResult.value = "Correcte!"
-            } else { answerResult.value = "Incorrecte! La resposta era " + question.value.answers[0]}
-            deleteUsedQuestion(randomQuestion.value)
-            selectRandomQuestion()
-            if (unusedQuestions.size <= 0){
-                goToEndScreen()
-            }
         }
     }
 }

@@ -31,7 +31,7 @@ fun TrivialNavigation() {
             gameScreen( goToResultScreen = { navController.navigate(Ubication.ResultScreen(it)) })
         }
         composable<Ubication.SettingsScreen> {
-            settingsScreen()
+            settingsScreen(goToMenuScreen = { navController.navigate(Ubication.MenuScreen) })
         }
         composable<Ubication.ResultScreen> { backStack ->
             val points = backStack.toRoute<Ubication.ResultScreen>().points
