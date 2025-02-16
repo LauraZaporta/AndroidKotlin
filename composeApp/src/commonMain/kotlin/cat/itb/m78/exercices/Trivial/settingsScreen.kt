@@ -23,11 +23,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontVariation.width
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import m78exercices.composeapp.generated.resources.Audiowide_Regular
@@ -40,6 +45,7 @@ import org.jetbrains.compose.resources.Font
 fun settingsScreen(goToMenuScreen:() -> Unit){
     val settingsVM = viewModel { SettingsTrivialVM() }
     val currentSettings = TrivialSettingsManager.get()
+
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
         Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.padding(start = 200.dp).fillMaxWidth()){
             Text("Difficulty", fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
@@ -144,6 +150,27 @@ fun settingsScreen(goToMenuScreen:() -> Unit){
                     Spacer(Modifier.width(10.dp))
                     Text("15", Modifier.padding(top = 10.dp))
                 }
+            }
+        }
+        Spacer(Modifier.height(30.dp))
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.padding(start = 200.dp).fillMaxWidth()){
+            Text("Time per round", fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
+            Spacer(Modifier.width(20.dp))
+            Row(modifier = Modifier.width(200.dp)){
+                Slider(
+                    value = settingsVM.secondsPerRound.value,
+                    onValueChange = { settingsVM.secondsPerRound.value = it
+                            TrivialSettingsManager.update(
+                            currentSettings.copy(time = settingsVM.secondsPerRound.value)
+                            )},
+                    colors = SliderDefaults.colors(
+                        thumbColor = MaterialTheme.colorScheme.secondary,
+                        activeTrackColor = MaterialTheme.colorScheme.secondary,
+                        inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ),
+                    steps = 50,
+                    valueRange = 3f..10f
+                )
             }
         }
         Spacer(Modifier.height(30.dp))

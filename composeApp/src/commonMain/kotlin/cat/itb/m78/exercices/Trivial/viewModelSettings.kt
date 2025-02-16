@@ -4,9 +4,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 class SettingsTrivialVM : ViewModel(){
-    var isExpanded = mutableStateOf(false)
-    var difficulty = mutableStateOf("Select the difficulty")
-    var roundOption = mutableStateOf(TrivialSettingsManager.get().rounds)
+    val isExpanded = mutableStateOf(false)
+    val difficulty = mutableStateOf("Select the difficulty")
+    val roundOption = mutableStateOf(TrivialSettingsManager.get().rounds)
+    val secondsPerRound = mutableStateOf(TrivialSettingsManager.get().time)
 
     fun updateRoundOption(num : Int){
         TrivialSettingsManager.update(

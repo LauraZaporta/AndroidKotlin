@@ -2,8 +2,7 @@ package cat.itb.m78.exercices.Trivial
 
 class Question(
     val question: String,
-    val answers: List<String>,
-    val indexRightAnswe: Int = 0 //La resposta correcta sempre serà la primera
+    val answers: List<String>
 )
 
 val QuestionsEasy: List<Question> = listOf(
@@ -142,7 +141,7 @@ val QuestionsMedium: List<Question> = listOf(
         listOf("Descobriment d'Amèrica", "Caiguda de Constantinoble", "Elena de Troia", "Fundació de Roma")),
     Question("Quin matemàtic va desenvolupar la teoria dels nombres primers?",
         listOf("Euclides", "Pitàgores", "Gauss", "Descartes")),
-    Question("Qui va crear el primer alfabeto fonètic?",
+    Question("Qui va crear el primer alfabet fonètic?",
         listOf("Els fenicis", "Els romans", "Els grecs", "Els egipcis")),
     Question("Quina obra de Beethoven va marcar el canvi cap al Romanticisme?",
         listOf("Simfonia nº 3, *Heroica*", "Simfonia nº 5", "Simfonia nº 9", "Simfonia nº 6")),

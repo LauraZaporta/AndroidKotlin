@@ -1,5 +1,6 @@
 package cat.itb.m78.exercices.Trivial
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,15 +13,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import m78exercices.composeapp.generated.resources.Audiowide_Regular
 import m78exercices.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.Font
@@ -29,10 +34,16 @@ import org.jetbrains.compose.resources.Font
 fun gameScreen(goToResultScreen:(Int) -> Unit){
     val trivialVM = viewModel { TrivialVM() }
 
-    // Quan la pantalla es crea o quan es canvia la pregunta s'executa
-    LaunchedEffect(Unit) {
-        trivialVM.selectRandomQuestion()
+    LaunchedEffect(trivialVM.timer.value) {
+        if (trivialVM.timer.value > 0) {
+            delay(10L)
+            val updatedTime = (trivialVM.timer.value - 0.01).coerceAtLeast(0.0)
+            trivialVM.timer.value = updatedTime.toFloat()
+        } else {
+            trivialVM.changeQuestionTimeOut{goToResultScreen(trivialVM.points.value)}
+        }
     }
+
     val answerOne = trivialVM.question.value.answers[trivialVM.answerPositions[0]]
     val answerTwo = trivialVM.question.value.answers[trivialVM.answerPositions[1]]
     val answerThree = trivialVM.question.value.answers[trivialVM.answerPositions[2]]
@@ -44,7 +55,6 @@ fun gameScreen(goToResultScreen:(Int) -> Unit){
             trivialVM.checkAnswer(ans) {
                 goToResultScreen(trivialVM.points.value)
             }
-            trivialVM.selectRandomQuestion()
         },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
@@ -81,7 +91,16 @@ fun gameScreen(goToResultScreen:(Int) -> Unit){
                 generateButton(answerFour)
             }
         }
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(30.dp))
+        LinearProgressIndicator(
+            progress = {
+                (trivialVM.timer.value / trivialVM.chosenSeconds)
+            },
+            modifier = Modifier
+                .height(10.dp)
+                .width(200.dp)
+        )
+        Spacer(Modifier.height(30.dp))
         if (trivialVM.answerResult.value == "Correcte!"){
             Text(trivialVM.answerResult.value, color = Color.Green, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
         } else {Text(trivialVM.answerResult.value, color = Color.Red, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))}
