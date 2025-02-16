@@ -1,5 +1,6 @@
 package cat.itb.m78.exercices.Trivial
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,18 +24,17 @@ import org.jetbrains.compose.resources.Font
 
 @Composable
 fun resultScreen(points: Int, goToMenuScreen:()-> Unit){
-    val trivialVM = viewModel { TrivialVM() }
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+    Column(modifier = Modifier.fillMaxSize().background(Color.Black), horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center){
-        Text("Your score: "+ points.toString(), fontSize = 5.em, color = Color.Black, fontFamily = FontFamily(
+        Text("Your score: "+ points.toString(), fontSize = 5.em, color = Color.White, fontFamily = FontFamily(
             Font(Res.font.Audiowide_Regular)))
         Spacer(Modifier.height(30.dp))
         Button( onClick = {goToMenuScreen()},
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
         ){
-            Text("Return to menu", color = Color.White, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
+            Text("Return to menu", color = Color.Black, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
         }
     }
 }

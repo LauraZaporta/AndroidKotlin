@@ -30,6 +30,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation.width
@@ -39,12 +40,47 @@ import m78exercices.composeapp.generated.resources.Audiowide_Regular
 import m78exercices.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
-// 2 funcions
-
 @Composable
 fun settingsScreen(goToMenuScreen:() -> Unit){
     val settingsVM = viewModel { SettingsTrivialVM() }
+
+    settingsScreenArguments({goToMenuScreen()}, settingsVM.isExpanded,
+        settingsVM.difficulty, settingsVM.roundOption.value, settingsVM::updateRoundOption,
+        settingsVM.secondsPerRound)
+}
+
+@Composable
+fun settingsScreenArguments(goToMenuScreen:() -> Unit, isExpanded: MutableState<Boolean>,
+                            difficulty: MutableState<String>, roundOption : Int,
+                            updateRoundOption: (Int)-> Unit, secondsPerRound : MutableState<Float>){
     val currentSettings = TrivialSettingsManager.get()
+
+    @Composable
+    fun generateDropDownMenuItem(text : String, num : Int){
+        DropdownMenuItem(
+            text = {
+                Text(text = text)
+            },
+            onClick = {
+                TrivialSettingsManager.update(
+                    currentSettings.copy(difficulty = num)
+                )
+                isExpanded.value = false
+                difficulty.value = text
+            }
+        )
+    }
+    @Composable
+    fun generateRadioButton(num : Int){
+        Row(){
+            RadioButton(
+                selected = roundOption == num,
+                onClick = { updateRoundOption(num) }
+            )
+            Spacer(Modifier.width(10.dp))
+            Text(num.toString(), Modifier.padding(top = 10.dp))
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center){
         Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.padding(start = 200.dp).fillMaxWidth()){
@@ -52,65 +88,30 @@ fun settingsScreen(goToMenuScreen:() -> Unit){
             Spacer(Modifier.width(20.dp))
 
             ExposedDropdownMenuBox(
-                expanded = settingsVM.isExpanded.value,
-                onExpandedChange = { newValue ->
-                    settingsVM.isExpanded.value = newValue
-                }
+                expanded = isExpanded.value,
+                onExpandedChange = { newValue -> isExpanded.value = newValue }
             ) {
                 TextField(
                     value = "",
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = settingsVM.isExpanded.value)
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded.value)
                     },
                     placeholder = {
-                        Text(text = settingsVM.difficulty.value)
+                        Text(text = difficulty.value)
                     },
                     modifier = Modifier.menuAnchor()
                 )
                 ExposedDropdownMenu(
-                    expanded = settingsVM.isExpanded.value,
+                    expanded = isExpanded.value,
                     onDismissRequest = {
-                        settingsVM.isExpanded.value = false
+                        isExpanded.value = false
                     }
                 ) {
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Easy")
-                        },
-                        onClick = {
-                            TrivialSettingsManager.update(
-                                currentSettings.copy(difficulty = -1)
-                            )
-                            settingsVM.isExpanded.value = false
-                            settingsVM.difficulty.value = "Easy"
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Medium")
-                        },
-                        onClick = {
-                            TrivialSettingsManager.update(
-                                currentSettings.copy(difficulty = 0)
-                            )
-                            settingsVM.isExpanded.value = false
-                            settingsVM.difficulty.value = "Medium"
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = "Hard")
-                        },
-                        onClick = {
-                            TrivialSettingsManager.update(
-                                currentSettings.copy(difficulty = 1)
-                            )
-                            settingsVM.isExpanded.value = false
-                            settingsVM.difficulty.value = "Hard"
-                        }
-                    )
+                    generateDropDownMenuItem("Easy", -1)
+                    generateDropDownMenuItem("Medium", 0)
+                    generateDropDownMenuItem("Hard", 1)
                 }
             }
         }
@@ -120,36 +121,9 @@ fun settingsScreen(goToMenuScreen:() -> Unit){
             Spacer(Modifier.width(20.dp))
 
             Column {
-                Row(){
-                    RadioButton(
-                        selected = settingsVM.roundOption.value == 5,
-                        onClick = {
-                            settingsVM.updateRoundOption(5)
-                        }
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    Text("5", Modifier.padding(top = 10.dp))
-                }
-                Row(){
-                    RadioButton(
-                        selected = settingsVM.roundOption.value == 10,
-                        onClick = {
-                            settingsVM.updateRoundOption(10)
-                        }
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    Text("10", Modifier.padding(top = 10.dp))
-                }
-                Row(){
-                    RadioButton(
-                        selected = settingsVM.roundOption.value == 15,
-                        onClick = {
-                            settingsVM.updateRoundOption(15)
-                        }
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    Text("15", Modifier.padding(top = 10.dp))
-                }
+                generateRadioButton(5)
+                generateRadioButton(10)
+                generateRadioButton(15)
             }
         }
         Spacer(Modifier.height(30.dp))
@@ -158,17 +132,17 @@ fun settingsScreen(goToMenuScreen:() -> Unit){
             Spacer(Modifier.width(20.dp))
             Row(modifier = Modifier.width(200.dp)){
                 Slider(
-                    value = settingsVM.secondsPerRound.value,
-                    onValueChange = { settingsVM.secondsPerRound.value = it
+                    value = secondsPerRound.value,
+                    onValueChange = { secondsPerRound.value = it
                             TrivialSettingsManager.update(
-                            currentSettings.copy(time = settingsVM.secondsPerRound.value)
+                            currentSettings.copy(time = secondsPerRound.value)
                             )},
                     colors = SliderDefaults.colors(
                         thumbColor = MaterialTheme.colorScheme.secondary,
                         activeTrackColor = MaterialTheme.colorScheme.secondary,
                         inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                     ),
-                    steps = 50,
+                    steps = 70,
                     valueRange = 3f..10f
                 )
             }

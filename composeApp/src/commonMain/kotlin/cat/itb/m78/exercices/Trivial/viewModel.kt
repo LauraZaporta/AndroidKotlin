@@ -21,7 +21,6 @@ class TrivialVM : ViewModel(){
     val chosenSeconds = TrivialSettingsManager.get().time
     val timer = mutableStateOf(chosenSeconds)
 
-
     private fun deleteUsedQuestion(randomQuestion : Int){
         unusedQuestions.remove(randomQuestion)
     }

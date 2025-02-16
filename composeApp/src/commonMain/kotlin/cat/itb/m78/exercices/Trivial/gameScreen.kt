@@ -17,6 +17,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,29 +32,38 @@ import m78exercices.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun gameScreen(goToResultScreen:(Int) -> Unit){
+fun gameScreen(goToResultScreen: (Int) -> Unit){
     val trivialVM = viewModel { TrivialVM() }
 
-    LaunchedEffect(trivialVM.timer.value) {
-        if (trivialVM.timer.value > 0) {
+    gameScreenArguments({ goToResultScreen(trivialVM.points.value) }, trivialVM.question.value.answers[trivialVM.answerPositions[0]],
+        trivialVM.question.value.answers[trivialVM.answerPositions[1]], trivialVM.question.value.answers[trivialVM.answerPositions[2]],
+        trivialVM.question.value.answers[trivialVM.answerPositions[3]], trivialVM.answerResult.value, trivialVM.points.value,
+        trivialVM.timer, trivialVM.chosenSeconds)
+}
+
+@Composable
+fun gameScreenArguments(goToResultScreen:(Int) -> Unit, ansOne : String,
+                        ansTwo : String, ansThree : String, ansFour : String,
+                        ansResult : String, points : Int, timer: MutableState<Float>,
+                        chosenSeconds : Float
+){
+    val trivialVM = viewModel { TrivialVM() }
+
+    LaunchedEffect(timer.value) { //X Dintre de ViewModel per complicacions
+        if (timer.value > 0) {
             delay(10L)
-            val updatedTime = (trivialVM.timer.value - 0.01).coerceAtLeast(0.0)
-            trivialVM.timer.value = updatedTime.toFloat()
+            val updatedTime = (timer.value - 0.01).coerceAtLeast(0.0)
+            timer.value = updatedTime.toFloat()
         } else {
-            trivialVM.changeQuestionTimeOut{goToResultScreen(trivialVM.points.value)}
+            trivialVM.changeQuestionTimeOut{goToResultScreen(points)}
         }
     }
-
-    val answerOne = trivialVM.question.value.answers[trivialVM.answerPositions[0]]
-    val answerTwo = trivialVM.question.value.answers[trivialVM.answerPositions[1]]
-    val answerThree = trivialVM.question.value.answers[trivialVM.answerPositions[2]]
-    val answerFour = trivialVM.question.value.answers[trivialVM.answerPositions[3]]
 
     @Composable
     fun generateButton(ans : String){
         Button( onClick = {
             trivialVM.checkAnswer(ans) {
-                goToResultScreen(trivialVM.points.value)
+                goToResultScreen(points)
             }
         },
             shape = RoundedCornerShape(8.dp),
@@ -80,29 +90,29 @@ fun gameScreen(goToResultScreen:(Int) -> Unit){
             verticalArrangement = Arrangement.Center
         ) {
             Row() {
-                generateButton(answerOne)
+                generateButton(ansOne)
                 Spacer(Modifier.width(10.dp))
-                generateButton(answerTwo)
+                generateButton(ansTwo)
             }
             Spacer(Modifier.height(10.dp))
             Row() {
-                generateButton(answerThree)
+                generateButton(ansThree)
                 Spacer(Modifier.width(10.dp))
-                generateButton(answerFour)
+                generateButton(ansFour)
             }
         }
         Spacer(Modifier.height(30.dp))
         LinearProgressIndicator(
             progress = {
-                (trivialVM.timer.value / trivialVM.chosenSeconds)
+                (timer.value / chosenSeconds)
             },
             modifier = Modifier
                 .height(10.dp)
                 .width(200.dp)
         )
         Spacer(Modifier.height(30.dp))
-        if (trivialVM.answerResult.value == "Correcte!"){
-            Text(trivialVM.answerResult.value, color = Color.Green, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
-        } else {Text(trivialVM.answerResult.value, color = Color.Red, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))}
+        if (ansResult == "Correcte!"){
+            Text(ansResult, color = Color.Green, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))
+        } else {Text(ansResult, color = Color.Red, fontFamily = FontFamily(Font(Res.font.Audiowide_Regular)))}
     }
 }
